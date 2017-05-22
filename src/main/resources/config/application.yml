@@ -1,0 +1,38 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overriden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+spring:
+  application:
+    name: actio
+  profiles:
+    active: dev
+  jackson:
+    serialization.write_dates_as_timestamps: false
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+#        open-in-view: false
+#        hibernate:
+#            ddl-auto: none
+#            naming:
+#                strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+  messages:
+    basename: i18n/messages
+  data:
+    rest:
+      base-path: /class
+  thymeleaf:
+    cache: false
+
+security:
+  basic:
+    enabled: false
+
+server:
+  session:
+    cookie:
+      http-only: true
