@@ -13,9 +13,9 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@EnableTransactionManagement
-//@EnableJpaRepositories(basePackages = "com.actio.repositories.sql")
 @EnableJpaAuditing
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = "com.maystrovyy.repositories.sql")
 public class JpaConfiguration extends HikariConfig {
 
     @Value(value = "${spring.datasource.hikari.jdbc-url}")
