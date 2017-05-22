@@ -3,12 +3,8 @@ package com.maystrovyy.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Getter
@@ -20,8 +16,8 @@ import java.io.Serializable;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
-@Entity(name = "teacher")
-@Table(name = "teachers")
+@Entity(name = "user")
+@Table(name = "users")
 public final class User implements Serializable {
 
     private static final long serialVersionUID = -1541082715017001139L;
@@ -31,24 +27,30 @@ public final class User implements Serializable {
     @Column(name = "TEACHER_ID")
     private Long id;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "FIRST_NAME")
+    private String firstName;
+
+    @Column(name = "LAST_NAME")
+    private String lastName;
+
+    @Column(name = "USER_NAME", unique = true)
+    private String userName;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "ROLE")
     private Role role;
 
-    @URL
+    /*@URL
     @Column(name = "URL")
-    private String url;
+    private String url;*/
 
-    @Size(min = 10, max = 10)
+    /*@Size(min = 10, max = 10)
     @Pattern(regexp = "(^$|[0-9]{10})")
     @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
+    private String phoneNumber;*/
 
-    @Email
+    /*@Email
     @Column(name = "EMAIL")
-    private String email;
+    private String email;*/
 
 }
