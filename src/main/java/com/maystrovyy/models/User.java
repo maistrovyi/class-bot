@@ -18,13 +18,13 @@ import java.io.Serializable;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Entity(name = "user")
 @Table(name = "users")
-public final class User implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = -1541082715017001139L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "TEACHER_ID")
+    @Column(name = "USER_ID")
     private Long id;
 
     @Column(name = "FIRST_NAME")
@@ -52,5 +52,11 @@ public final class User implements Serializable {
     /*@Email
     @Column(name = "EMAIL")
     private String email;*/
+
+    public enum Role {
+
+        STUDENT, TEACHER
+
+    }
 
 }

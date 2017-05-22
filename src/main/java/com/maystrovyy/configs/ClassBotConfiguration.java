@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.TelegramBotsApi;
 
 @Configuration
@@ -24,6 +25,13 @@ public class ClassBotConfiguration {
                 .token(token)
                 .username(USERNAME)
                 .create();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+//        restTemplate.setMessageConverters();
+        return restTemplate;
     }
 
     @Bean

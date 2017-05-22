@@ -36,15 +36,30 @@ public final class ClassBot extends TelegramLongPollingBot {
             String telegramUserName = message.getFrom().getUserName();
             User persistedUser = userService.findByUserName(telegramUserName);
             if (persistedUser == null) {
-                send(createMessageWithButton(message.getChatId()));
+                send(createMessageWithButton(message.getChatId(), Messages.GREETING));
                 User user = UserConverter.toUser(update.getMessage().getFrom());
                 userService.save(user);
+            } else if (persistedUser.getRole() == null) {
+                send(createMessageWithButton(message.getChatId(), "Пожалуйста, укажи свою роль!"));
             }
         }
 
         if (update.hasCallbackQuery()) {
-            SendMessage message = createMessage(update.getCallbackQuery().getMessage().getChatId(), update.getCallbackQuery().getData());
-            send(message);
+            String data = update.getCallbackQuery().getData();
+//            TODO check for null
+            User persistedUser = userService.findByUserName(update.getCallbackQuery().getFrom().getUserName());
+            switch (data) {
+                case "%iamstudent%":
+                    persistedUser.setRole(User.Role.STUDENT);
+                    userService.update(persistedUser);
+                    send(createMessage(update.getCallbackQuery().getMessage().getChatId(), "Отлично, а теперь укажи свою группу! Например \"ВВ-41\" или же \"vv-41\""));
+                    break;
+                case "%iamteacher%":
+                    persistedUser.setRole(User.Role.TEACHER);
+                    userService.update(persistedUser);
+                    send(createMessage(update.getCallbackQuery().getMessage().getChatId(), "Отлично, препод!"));
+                    break;
+            }
         }
     }
 
@@ -63,20 +78,21 @@ public final class ClassBot extends TelegramLongPollingBot {
         }
     }
 
-    private SendMessage createMessageWithButton(Long chatId) {
+    private SendMessage createMessageWithButton(Long chatId, String text) {
         SendMessage message = new SendMessage();
-        message.setText(Messages.GREETING);
+        message.setText(text);
         message.setChatId(chatId);
 
         ArrayList<InlineKeyboardButton> row = new ArrayList<>();
-        InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("Студент");
-        button.setCallbackData("%iamstudent%");
-        row.add(button);
+        InlineKeyboardButton firstButton = new InlineKeyboardButton();
+        firstButton.setText("Студент");
+        firstButton.setCallbackData("%iamstudent%");
+        row.add(firstButton);
 
-        button.setText("Преподаватель");
-        button.setCallbackData("%iamteacher%");
-        row.add(button);
+        InlineKeyboardButton secondButton = new InlineKeyboardButton();
+        secondButton.setText("Преподаватель");
+        secondButton.setCallbackData("%iamteacher%");
+        row.add(secondButton);
 
         ArrayList<List<InlineKeyboardButton>> rows = new ArrayList<>();
         rows.add(row);
