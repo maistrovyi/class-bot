@@ -4,7 +4,7 @@ import com.maystrovyy.bot.ClassBotClient;
 import com.maystrovyy.models.Messages;
 import com.maystrovyy.models.User;
 import com.maystrovyy.services.UserService;
-import com.maystrovyy.utills.UserConverter;
+import com.maystrovyy.utills.UserDtoManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public final class ClassBot extends TelegramLongPollingBot {
             User persistedUser = userService.findByUserName(telegramUserName);
             if (persistedUser == null) {
                 send(createMessageWithButton(message.getChatId(), Messages.GREETING));
-                User user = UserConverter.toUser(update.getMessage().getFrom());
+                User user = UserDtoManager.toUser(update.getMessage().getFrom());
                 userService.save(user);
             } else if (persistedUser.getRole() == null) {
                 send(createMessageWithButton(message.getChatId(), "Пожалуйста, укажи свою роль!"));

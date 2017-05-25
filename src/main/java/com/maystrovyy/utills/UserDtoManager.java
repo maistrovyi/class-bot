@@ -2,7 +2,7 @@ package com.maystrovyy.utills;
 
 import com.maystrovyy.models.User;
 
-public interface UserConverter {
+public interface UserDtoManager {
 
     static User toUser(org.telegram.telegrambots.api.objects.User telegramUser) {
         return User.of()

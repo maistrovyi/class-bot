@@ -1,4 +1,4 @@
-package com.maystrovyy.rozkladj.api.v1;
+package com.maystrovyy.rozkladj;
 
 import com.maystrovyy.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +26,5 @@ public class ScheduleRestConnection {
         return schedule;
     }
 
-    /*public Period parseSchedule2(@NotNull String groupName) {
-        URI uri = null;
-        try {
-            uri = new URI("https://api.rozklad.org.ua/v2/groups/ВВ-41/lessons");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        restTemplate.
-        return schedule;
-    }*/
 
 }
