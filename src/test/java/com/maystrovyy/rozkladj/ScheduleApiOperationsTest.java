@@ -15,7 +15,7 @@ import java.net.URI;
 
 @SpringBootTest
 @RunWith(value = SpringRunner.class)
-public class ScheduleRestConnectionTest {
+public class ScheduleApiOperationsTest {
 
     @Resource
     RestTemplate restTemplate;
