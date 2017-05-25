@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Comparator;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.TIME;
@@ -25,7 +26,7 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.TIME;
 @JsonInclude(value = NON_NULL)
 @Entity(name = "period")
 @Table(name = "periods")
-public class Period implements Serializable {
+public class Period implements Serializable, Comparator<Period>, Comparable<Period> {
 
     private static final long serialVersionUID = 7041550420150394158L;
 
@@ -82,6 +83,19 @@ public class Period implements Serializable {
 
     public void setDayOfWeekFromDayNumber() {
         this.setDayOfWeek(DayOfWeek.of(this.dayNumber));
+    }
+
+    @Override
+    public int compare(Period o1, Period o2) {
+        return Integer.compare(o1 == null ? 0 : o1.getLessonNumber(),
+                o2 == null ? 0 : o2.getLessonNumber());
+    }
+
+    @Override
+    public int compareTo(Period o) {
+        return Integer.compare(this.getLessonNumber(),
+                o == null ? 0 : o.getLessonNumber());
+
     }
 
 }

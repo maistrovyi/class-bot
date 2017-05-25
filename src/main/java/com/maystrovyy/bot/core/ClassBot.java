@@ -4,7 +4,8 @@ import com.maystrovyy.bot.ClassBotClient;
 import com.maystrovyy.models.Messages;
 import com.maystrovyy.models.User;
 import com.maystrovyy.services.UserService;
-import com.maystrovyy.utills.UserDtoManager;
+import com.maystrovyy.utils.helpers.ScheduleHelper;
+import com.maystrovyy.utils.managers.UserDtoManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,12 +36,19 @@ public final class ClassBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             String telegramUserName = message.getFrom().getUserName();
             User persistedUser = userService.findByUserName(telegramUserName);
+            Long chatId = message.getChatId();
             if (persistedUser == null) {
-                send(createMessageWithButton(message.getChatId(), Messages.GREETING));
+                send(createMessageWithButton(chatId, Messages.GREETING));
                 User user = UserDtoManager.toUser(update.getMessage().getFrom());
                 userService.save(user);
             } else if (persistedUser.getRole() == null) {
-                send(createMessageWithButton(message.getChatId(), "Пожалуйста, укажи свою роль!"));
+                send(createMessageWithButton(chatId, "Пожалуйста, укажи свою роль!"));
+            } else {
+                switch (update.getMessage().getText()) {
+                    case "1":
+                        send(createMessage(chatId, ScheduleHelper.scheduleToTelegramText()));
+                        break;
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-package com.maystrovyy.utills;
+package com.maystrovyy.utils.managers;
 
 import com.maystrovyy.models.User;
 
