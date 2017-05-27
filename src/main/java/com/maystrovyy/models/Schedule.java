@@ -6,12 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
-
-import static com.maystrovyy.configs.ApplicationConstants.GROUP_NAME_REGEXP;
 
 @Getter
 @Setter
@@ -33,8 +29,6 @@ public class Schedule implements Serializable {
     @Column(name = "SCHEDULE_ID")
     private Long id;
 
-    @Size(min = 5, max = 5)
-    @Pattern(regexp = GROUP_NAME_REGEXP)
     @Column(name = "GROUP_NAME")
     private String groupName;
 
