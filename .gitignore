@@ -22,4 +22,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-src/main/resources/config/secret.properties
+/src/main/resources/config/secret.properties
+/src/main/resources/config/.coveralls.yml
