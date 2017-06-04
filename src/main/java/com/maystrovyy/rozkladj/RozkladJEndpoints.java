@@ -9,7 +9,7 @@ public interface RozkladJEndpoints {
     String BASE_PATH = API_DOMAIN + API_VER + separator;
 
     String GROUPS = "groups";
-
     String LESSONS = "lessons";
+    String WEEKS = "weeks";
 
 }

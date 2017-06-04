@@ -32,9 +32,6 @@ public class Schedule implements Serializable {
     @Column(name = "GROUP_NAME")
     private String groupName;
 
-//    TODO transliteration support
-//    private String localizedGroupName;
-
     @JsonProperty(value = "data")
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "SCHEDULE_FK", referencedColumnName = "PERIOD_FK")

@@ -21,6 +21,10 @@ public class ScheduleService {
         return scheduleRepository.findOne(id);
     }
 
+    public Schedule findByGroupName(String groupName) {
+        return scheduleRepository.findByGroupName(groupName);
+    }
+
     public Schedule save(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
