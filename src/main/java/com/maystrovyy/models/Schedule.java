@@ -6,8 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
+
 
 @Getter
 @Setter
@@ -29,8 +31,13 @@ public class Schedule implements Serializable {
     @Column(name = "SCHEDULE_ID")
     private Long id;
 
+    @Size(min = 5, max = 5)
+//    @Pattern(regexp = ApplicationConstants.LOGIN_REGEXP)
     @Column(name = "GROUP_NAME")
     private String groupName;
+
+//    TODO transliteration support
+//    private String localizedGroupName;
 
     @JsonProperty(value = "data")
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
