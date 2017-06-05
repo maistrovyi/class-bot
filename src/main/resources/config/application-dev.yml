@@ -16,8 +16,8 @@ spring:
         hikari:
             data-source-class-name: org.postgresql.ds.PGSimpleDataSource
             jdbc-url: jdbc:postgresql://localhost:5432/class?autoReconnect=true&useSSL=false
-            username: postgres
-            password: postgres
+            username: maystrovyy
+            password:
     jpa:
         show-sql: true
         hibernate:
