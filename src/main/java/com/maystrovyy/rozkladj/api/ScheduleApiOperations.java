@@ -1,5 +1,6 @@
 package com.maystrovyy.rozkladj.api;
 
+import com.maystrovyy.models.Period;
 import com.maystrovyy.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,18 +8,23 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
+import static com.maystrovyy.rozkladj.RozkladJEndpoints.*;
+import static java.io.File.separator;
+
 @Component
 public class ScheduleApiOperations implements BaseApiOperations<Schedule> {
-
-    private final String VV_41_LESSONS = "https://api.rozklad.org.ua/v2/groups/ВВ-41/lessons";
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
-    public Schedule parse(String stingUri) {
-        URI uri = getURI(stingUri);
-        return restTemplate.getForObject(uri, Schedule.class);
+    public Schedule parse(String groupName) {
+        String url = BASE_PATH + GROUPS + separator + groupName + separator + LESSONS;
+        URI uri = getURI(url);
+        Schedule schedule = restTemplate.getForObject(uri, Schedule.class);
+        schedule.setGroupName(groupName);
+        schedule.getPeriods().forEach(Period::setDayOfWeekFromDayNumber);
+        return schedule;
     }
 
 }

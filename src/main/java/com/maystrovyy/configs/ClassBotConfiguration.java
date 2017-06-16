@@ -17,7 +17,11 @@ public class ClassBotConfiguration {
 
     private static final String USERNAME = "ClassBot";
 
-    @Value(value = "${token}")
+        @Value(value = "${token}")
+//    @ValueByProfile.List({
+//            @ValueByProfile(profile = "dev", classpath = "classpath:/config/secret.properties", value = @Value("${token}"), env = "2"),
+//            @ValueByProfile(profile = "test", classpath = "1", value = @Value("${empty}"), env = "SYSTEM.TOKEN")
+//    })
     public String token;
 
     @Bean

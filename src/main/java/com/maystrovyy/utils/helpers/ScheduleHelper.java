@@ -1,15 +1,5 @@
 package com.maystrovyy.utils.helpers;
 
-import com.google.common.collect.Sets;
-import com.maystrovyy.models.Period;
-import com.maystrovyy.models.Schedule;
-
-import java.time.DayOfWeek;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public interface ScheduleHelper {
 
     /*static String scheduleToTelegramText() {
@@ -22,9 +12,9 @@ public interface ScheduleHelper {
                 "\t \t \t Арламов Олександр Юрійович";
     }*/
 
-    static String scheduleToTelegramText() {
+    /*static String scheduleToTelegramText(Schedule schedule) {
         StringBuilder builder = new StringBuilder();
-        Schedule schedule = getSchedule();
+//        Schedule schedule = getSchedule();
         Set<Period> periods = schedule.getPeriods();
 
         List<Period> firstMondayPeriods = periods.stream()
@@ -47,13 +37,6 @@ public interface ScheduleHelper {
                 .append("\t \t \t ")
                 .append(period.getTeacherName()));
         return builder.toString();
-    }
-
-    static Schedule getSchedule() {
-        return Schedule.of()
-                .groupName("VV-41")
-                .periods(getPeriods())
-                .create();
     }
 
     static Set<Period> getPeriods() {
@@ -80,6 +63,6 @@ public interface ScheduleHelper {
                         .teacherName("Арламов Олександр Юрійович")
                         .lessonWeek(1)
                         .create());
-    }
+    }*/
 
 }

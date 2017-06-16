@@ -13,25 +13,25 @@ import javax.annotation.Resource;
 public class BaseApiOperationsTest {
 
     @Resource
-    ScheduleApiOperations baseApiOperations;
+    GroupApiOperations groupApiOperations;
 
     @Test
     public void isValidGroupName_Success() {
-        Assert.assertTrue(baseApiOperations.isValidGroupName("vv-41"));
-        Assert.assertTrue(baseApiOperations.isValidGroupName("VV-41"));
+        Assert.assertTrue(groupApiOperations.isValidGroupName("vv-41"));
+        Assert.assertTrue(groupApiOperations.isValidGroupName("VV-41"));
 
-        Assert.assertTrue(baseApiOperations.isValidGroupName(" V V - 4 1"));
+        Assert.assertTrue(groupApiOperations.isValidGroupName(" V V - 4 1"));
 
-        Assert.assertFalse(baseApiOperations.isValidGroupName("VV-412"));
-        Assert.assertFalse(baseApiOperations.isValidGroupName("-4@12"));
-        Assert.assertFalse(baseApiOperations.isValidGroupName("12"));
-        Assert.assertFalse(baseApiOperations.isValidGroupName("12345"));
-        Assert.assertFalse(baseApiOperations.isValidGroupName("VVVVV"));
-        Assert.assertFalse(baseApiOperations.isValidGroupName("VV"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("VV-412"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("-4@12"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("12"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("12345"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("VVVVV"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName("VV"));
 
-        Assert.assertFalse(baseApiOperations.isValidGroupName(null));
-        Assert.assertTrue(baseApiOperations.isValidGroupName(" ВВ - 4 1"));
-        Assert.assertTrue(baseApiOperations.isValidGroupName("ЇЯ-41"));
+        Assert.assertFalse(groupApiOperations.isValidGroupName(null));
+        Assert.assertTrue(groupApiOperations.isValidGroupName(" ВВ - 4 1"));
+        Assert.assertTrue(groupApiOperations.isValidGroupName("ЇЯ-41"));
     }
 
 }
