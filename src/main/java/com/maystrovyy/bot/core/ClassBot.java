@@ -71,7 +71,7 @@ public final class ClassBot extends TelegramLongPollingBot {
                         send(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
                         send(createMessageWithKeyboard(chatId, "Лови за це менюху!"));
 //                        TODO fix Group mapping
-                        persistedUser.setGroupName(group.getGroupFullName());
+                        persistedUser.setGroupName(groupName);
                         userService.update(persistedUser);
                         Schedule schedule = scheduleApiOp.parse(groupName);
                         scheduleService.save(schedule);
