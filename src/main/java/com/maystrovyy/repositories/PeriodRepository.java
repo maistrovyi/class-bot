@@ -1,4 +1,4 @@
-package com.maystrovyy.repositories.sql;
+package com.maystrovyy.repositories;
 
 import com.maystrovyy.models.Period;
 import org.springframework.data.jpa.repository.JpaRepository;

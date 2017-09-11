@@ -22,15 +22,15 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
+//import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+//import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
-public final class ClassBot extends TelegramLongPollingBot {
+public final class ClassBot {
 
     @Autowired
     private ClassBotClient botClient;
@@ -50,7 +50,7 @@ public final class ClassBot extends TelegramLongPollingBot {
     @Autowired
     private ScheduleManager scheduleManager;
 
-    @Override
+//    @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
@@ -131,11 +131,11 @@ public final class ClassBot extends TelegramLongPollingBot {
     }
 
     private void send(SendMessage message) {
-        try {
-            sendMessage(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            sendMessage(message);
+//        } catch (TelegramApiException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private SendMessage createMessageWithButton(Long chatId, String text) {
@@ -192,7 +192,7 @@ public final class ClassBot extends TelegramLongPollingBot {
         return replyKeyboardMarkup;
     }
 
-    @Override
+    /*@Override
     public String getBotUsername() {
         return botClient.username;
     }
@@ -200,6 +200,6 @@ public final class ClassBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return botClient.token;
-    }
+    }*/
 
 }

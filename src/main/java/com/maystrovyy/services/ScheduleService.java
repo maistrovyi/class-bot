@@ -1,11 +1,12 @@
 package com.maystrovyy.services;
 
 import com.maystrovyy.models.Schedule;
-import com.maystrovyy.repositories.sql.ScheduleRepository;
+import com.maystrovyy.repositories.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ScheduleService {
@@ -17,8 +18,8 @@ public class ScheduleService {
         return scheduleRepository.findAll();
     }
 
-    public Schedule findById(Long id) {
-        return scheduleRepository.findOne(id);
+    public Optional<Schedule> findById(Long id) {
+        return scheduleRepository.findById(id);
     }
 
     public Schedule findByGroupName(String groupName) {
@@ -38,7 +39,7 @@ public class ScheduleService {
     }
 
     public void delete(Long id) {
-        scheduleRepository.delete(id);
+        scheduleRepository.deleteById(id);
     }
 
 }

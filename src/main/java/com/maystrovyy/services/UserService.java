@@ -1,11 +1,12 @@
 package com.maystrovyy.services;
 
 import com.maystrovyy.models.User;
-import com.maystrovyy.repositories.sql.UserRepository;
+import com.maystrovyy.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -21,8 +22,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User findById(Long id) {
-        return userRepository.findOne(id);
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
     public User save(User user) {
@@ -38,7 +39,7 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
 }
