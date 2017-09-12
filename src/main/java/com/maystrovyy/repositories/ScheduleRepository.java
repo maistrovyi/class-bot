@@ -1,4 +1,4 @@
-package com.maystrovyy.repositories.sql;
+package com.maystrovyy.repositories;
 
 import com.maystrovyy.models.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;

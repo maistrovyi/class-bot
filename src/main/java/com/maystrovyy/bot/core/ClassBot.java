@@ -1,6 +1,5 @@
 package com.maystrovyy.bot.core;
 
-import com.maystrovyy.bot.ClassBotClient;
 import com.maystrovyy.bot.Messages;
 import com.maystrovyy.models.Group;
 import com.maystrovyy.models.Schedule;
@@ -11,9 +10,13 @@ import com.maystrovyy.services.ScheduleService;
 import com.maystrovyy.services.UserService;
 import com.maystrovyy.utils.managers.ScheduleManager;
 import com.maystrovyy.utils.managers.UserDtoManager;
+import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -23,17 +26,24 @@ import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboar
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
+@PropertySource(value = "classpath:/config/secret.properties")
 public final class ClassBot extends TelegramLongPollingBot {
 
-    @Autowired
-    private ClassBotClient botClient;
+    static {
+        ApiContextInitializer.init();
+    }
+
+    @Value(value = "${token}")
+    public String token;
+
+    @Value(value = "${username}")
+    public String username;
 
     @Autowired
     private UserService userService;
@@ -131,11 +141,7 @@ public final class ClassBot extends TelegramLongPollingBot {
     }
 
     private void send(SendMessage message) {
-        try {
-            sendMessage(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        Try.of(() -> execute(message));
     }
 
     private SendMessage createMessageWithButton(Long chatId, String text) {
@@ -194,12 +200,12 @@ public final class ClassBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return botClient.username;
+        return this.username;
     }
 
     @Override
     public String getBotToken() {
-        return botClient.token;
+        return this.token;
     }
 
 }

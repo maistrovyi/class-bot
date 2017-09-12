@@ -43,10 +43,8 @@ public class GroupApiOperations implements BaseApiOperations<Group> {
     }
 
     public boolean isValidGroupName(String groupName) {
-        if (groupName.length() >= 5 || groupName.length() <= 7) {
-            return matchGroupNameToRegex(groupName);
-        }
-        return false;
+//        TODO check this impl
+        return groupName.length() >= 5 && matchGroupNameToRegex(groupName);
     }
 
 }

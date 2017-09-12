@@ -22,8 +22,11 @@ public class ScheduleApiOperations implements BaseApiOperations<Schedule> {
         String url = BASE_PATH + GROUPS + separator + groupName + separator + LESSONS;
         URI uri = getURI(url);
         Schedule schedule = restTemplate.getForObject(uri, Schedule.class);
-        schedule.setGroupName(groupName);
-        schedule.getPeriods().forEach(Period::setDayOfWeekFromDayNumber);
+//        TODO refactor this checking
+        if (schedule != null) {
+            schedule.setGroupName(groupName);
+            schedule.getPeriods().forEach(Period::setDayOfWeekFromDayNumber);
+        }
         return schedule;
     }
 

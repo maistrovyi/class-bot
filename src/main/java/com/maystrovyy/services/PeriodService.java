@@ -1,11 +1,12 @@
 package com.maystrovyy.services;
 
 import com.maystrovyy.models.Period;
-import com.maystrovyy.repositories.sql.PeriodRepository;
+import com.maystrovyy.repositories.PeriodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PeriodService {
@@ -17,8 +18,8 @@ public class PeriodService {
         return periodRepository.findAll();
     }
 
-    public Period findById(Long id) {
-        return periodRepository.findOne(id);
+    public Optional<Period> findById(Long id) {
+        return periodRepository.findById(id);
     }
 
     public Period save(Period period) {
@@ -34,7 +35,7 @@ public class PeriodService {
     }
 
     public void delete(Long id) {
-        periodRepository.delete(id);
+        periodRepository.deleteById(id);
     }
 
 }
