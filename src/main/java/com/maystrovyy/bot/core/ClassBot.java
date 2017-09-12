@@ -12,6 +12,8 @@ import com.maystrovyy.utils.managers.ScheduleManager;
 import com.maystrovyy.utils.managers.UserDtoManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -30,11 +32,18 @@ import java.util.List;
 
 @Slf4j
 @Component
+@PropertySource(value = "classpath:/config/secret.properties")
 public final class ClassBot extends TelegramLongPollingBot {
 
     static {
         ApiContextInitializer.init();
     }
+
+    @Value(value = "${token}")
+    public String token;
+
+    @Value(value = "${username}")
+    public String username;
 
     @Autowired
     private UserService userService;
@@ -195,12 +204,12 @@ public final class ClassBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "ClassBot";
+        return this.username;
     }
 
     @Override
     public String getBotToken() {
-        return "366135957:AAHPb8z1G36cJjOn1LBBjvIKGPdArecwxmo";
+        return this.token;
     }
 
 }

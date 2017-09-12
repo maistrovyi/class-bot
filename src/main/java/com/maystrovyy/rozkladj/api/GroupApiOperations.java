@@ -2,6 +2,7 @@ package com.maystrovyy.rozkladj.api;
 
 import com.maystrovyy.models.Group;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -17,7 +18,8 @@ import static java.io.File.separator;
 @Component
 public class GroupApiOperations implements BaseApiOperations<Group> {
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public Group parse(String groupName) {
@@ -41,10 +43,8 @@ public class GroupApiOperations implements BaseApiOperations<Group> {
     }
 
     public boolean isValidGroupName(String groupName) {
-        if (groupName.length() >= 5 || groupName.length() <= 7) {
-            return matchGroupNameToRegex(groupName);
-        }
-        return false;
+//        TODO check this impl
+        return groupName.length() >= 5 && matchGroupNameToRegex(groupName);
     }
 
 }

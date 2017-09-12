@@ -19,9 +19,7 @@ public class ClassBotApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
-//		ApiContextInitializer.init();
-		TelegramBotsApi botsApi = new TelegramBotsApi();
-		botsApi.registerBot(classBot);
+		new TelegramBotsApi().registerBot(classBot);
 	}
 
 }
