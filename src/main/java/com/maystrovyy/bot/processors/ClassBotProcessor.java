@@ -23,9 +23,9 @@ public interface ClassBotProcessor {
         return message;
     }
 
-    default SendMessage createMessageWithKeyboard(Long chatId, String text) {
+    default SendMessage createMessageWithKeyboard(Long chatId, String text, ReplyKeyboardMarkup keyboardMarkup) {
         SendMessage message = createMessage(chatId, text);
-        message.setReplyMarkup(menuKeyboard());
+        message.setReplyMarkup(keyboardMarkup);
         return message;
     }
 
@@ -61,7 +61,7 @@ public interface ClassBotProcessor {
 
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         KeyboardButton button1 = new KeyboardButton("Розклад");
-        KeyboardButton button2 = new KeyboardButton("Тиждень");
+        KeyboardButton button2 = new KeyboardButton("Викладачі");
         keyboardFirstRow.add(button1);
         keyboardFirstRow.add(button2);
 
@@ -78,6 +78,31 @@ public interface ClassBotProcessor {
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
         keyboard.add(keyboardFourthRow);
+        replyKeyboardMarkup.setKeyboard(keyboard);
+
+        return replyKeyboardMarkup;
+    }
+
+    default ReplyKeyboardMarkup scheduleMenuKeyboard() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardButton button1 = new KeyboardButton("Сьогодні");
+        KeyboardButton button2 = new KeyboardButton("Завтра");
+        KeyboardButton button3 = new KeyboardButton("Тиждень");
+        keyboardFirstRow.add(button1);
+        keyboardFirstRow.add(button2);
+        keyboardFirstRow.add(button3);
+
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
+        KeyboardButton button4 = new KeyboardButton("Назад");
+        keyboardSecondRow.add(button4);
+
+        keyboard.add(keyboardFirstRow);
+        keyboard.add(keyboardSecondRow);
         replyKeyboardMarkup.setKeyboard(keyboard);
 
         return replyKeyboardMarkup;

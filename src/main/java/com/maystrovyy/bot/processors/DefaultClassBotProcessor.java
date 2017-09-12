@@ -57,7 +57,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                 Group group = groupApiOp.parse(groupName);
                 if (group != null) {
                     send(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
-                    send(createMessageWithKeyboard(chatId, "Лови за це менюху!"));
+                    send(createMessageWithKeyboard(chatId, "Лови за це менюху!", menuKeyboard()));
 //                        TODO fix Group mapping
                     persistedUser.setGroupName(groupName);
                     userService.update(persistedUser);
@@ -73,16 +73,41 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
             String text = message.getText();
             switch (text) {
                 case "Розклад":
+                    send(createMessageWithKeyboard(chatId, "Уточни на коли...", scheduleMenuKeyboard()));
+                    break;
+                case "Сьогодні":
                     String groupName = persistedUser.getGroupName();
                     Schedule schedule = scheduleService.findByGroupName(groupName);
                     if (schedule != null) {
-                        send(createMessage(chatId, scheduleManager.dailyScheduleToTelegramText(schedule)));
+                        send(createMessage(chatId, scheduleManager.getTodaySchedule(schedule)));
                     } else {
-                        send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка..."));
+                        send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
                     }
                     break;
+                case "Завтра":
+                    groupName = persistedUser.getGroupName();
+                    schedule = scheduleService.findByGroupName(groupName);
+                    if (schedule != null) {
+                        send(createMessage(chatId, scheduleManager.getTomorrowSchedule(schedule)));
+                    } else {
+                        send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
+                    }
+                    break;
+                case "Тиждень":
+                    groupName = persistedUser.getGroupName();
+                    schedule = scheduleService.findByGroupName(groupName);
+                    if (schedule != null) {
+                        send(createMessage(chatId, scheduleManager.getWeekSchedule(schedule)));
+                    } else {
+                        send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
+                    }
+                    break;
+                case "Назад": {
+                    send(createMessageWithKeyboard(chatId, "На головну...", menuKeyboard()));
+                    break;
+                }
                 default:
-                    send(createMessageWithKeyboard(chatId, "Сорян, але я тебе не зрозумів..."));
+                    send(createMessageWithKeyboard(chatId, "Сорян, але я тебе не зрозумів...", menuKeyboard()));
             }
         }
     }
