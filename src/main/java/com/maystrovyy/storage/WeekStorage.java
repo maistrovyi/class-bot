@@ -1,14 +1,29 @@
 package com.maystrovyy.storage;
 
+import com.maystrovyy.models.Week.WeekNumber;
+import com.maystrovyy.rozkladj.api.WeekApiOperations;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+
+import static com.maystrovyy.rozkladj.RozkladJEndpoints.EMPTY;
 
 @Component
 public class WeekStorage {
 
-    private volatile int week;
+     @Autowired
+     private WeekApiOperations weekApiOperations;
 
-    public void setWeek() {
-        this.week = 1;
-    }
+     @Getter
+     private WeekNumber weekNumber;
+
+     @PostConstruct
+     @Scheduled(cron = "0 0 12 ? * SUN")
+     private void init() {
+          this.weekNumber = WeekNumber.integerOf(weekApiOperations.parse(EMPTY).getNumber());
+     }
 
 }

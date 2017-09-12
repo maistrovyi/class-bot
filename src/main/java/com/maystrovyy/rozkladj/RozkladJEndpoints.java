@@ -12,4 +12,6 @@ public interface RozkladJEndpoints {
     String LESSONS = "lessons";
     String WEEKS = "weeks";
 
+    String EMPTY = "";
+
 }
