@@ -1,6 +1,5 @@
 package com.maystrovyy.bot.core;
 
-import com.maystrovyy.bot.ClassBotClient;
 import com.maystrovyy.bot.Messages;
 import com.maystrovyy.models.Group;
 import com.maystrovyy.models.Schedule;
@@ -14,6 +13,7 @@ import com.maystrovyy.utils.managers.UserDtoManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.Update;
@@ -22,18 +22,19 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
-//import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-//import org.telegram.telegrambots.exceptions.TelegramApiException;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Component
-public final class ClassBot {
+public final class ClassBot extends TelegramLongPollingBot {
 
-    @Autowired
-    private ClassBotClient botClient;
+    static {
+        ApiContextInitializer.init();
+    }
 
     @Autowired
     private UserService userService;
@@ -50,7 +51,7 @@ public final class ClassBot {
     @Autowired
     private ScheduleManager scheduleManager;
 
-//    @Override
+    @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
@@ -131,11 +132,11 @@ public final class ClassBot {
     }
 
     private void send(SendMessage message) {
-//        try {
-//            sendMessage(message);
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private SendMessage createMessageWithButton(Long chatId, String text) {
@@ -192,14 +193,14 @@ public final class ClassBot {
         return replyKeyboardMarkup;
     }
 
-    /*@Override
+    @Override
     public String getBotUsername() {
-        return botClient.username;
+        return "ClassBot";
     }
 
     @Override
     public String getBotToken() {
-        return botClient.token;
-    }*/
+        return "366135957:AAHPb8z1G36cJjOn1LBBjvIKGPdArecwxmo";
+    }
 
 }

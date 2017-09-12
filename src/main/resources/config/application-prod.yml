@@ -6,21 +6,15 @@
 
 spring:
   profiles: prod
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+
   datasource:
-      platform: postgres
-      url: jdbc:postgresql://$heroku_ip:$heroku_port/actio?autoReconnect=true&useSSL=false
+    hikari:
+      jdbc-url: jdbc:pgjdbc-ng://$heroku_host:$heroku_port/class?autoReconnect=true&useSSL=false
       username: $herokuUserName
       password: $herokuPassword
-      driver-class-name: org.postgresql.Driver
-    jpa:
-      show-sql: true
-      hibernate:
-        ddl-auto: create-drop
-  data:
-    mongodb:
-      name: eat
-      net:
-        bindIp: $heroku_ip
-        port: $heroku_port
-server:
-    port: 8080
+#      data-source-class-name: org.postgresql.ds.PGSimpleDataSource

@@ -1,3 +1,4 @@
+/*
 package com.maystrovyy.bot;
 
 import lombok.Builder;
@@ -9,4 +10,4 @@ public final class ClassBotClient {
 
     public final String username;
 
-}
+}*/

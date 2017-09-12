@@ -1,52 +1,29 @@
+/*
 package com.maystrovyy.configs;
 
 import com.maystrovyy.bot.ClassBotClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-import org.telegram.telegrambots.TelegramBotsApi;
 
-@Configuration
-@ComponentScan
+@SpringBootConfiguration
 @PropertySource(value = "classpath:/config/secret.properties")
 public class ClassBotConfiguration {
 
-    private static final String USERNAME = "ClassBot";
-
-        @Value(value = "${token}")
-//    @ValueByProfile.List({
-//            @ValueByProfile(profile = "dev", classpath = "classpath:/config/secret.properties", value = @Value("${token}"), env = "2"),
-//            @ValueByProfile(profile = "test", classpath = "1", value = @Value("${empty}"), env = "SYSTEM.TOKEN")
-//    })
+    @Value(value = "${token}")
     public String token;
 
+    @Value(value = "${username}")
+    public String username;
+
     @Bean
-    public ClassBotClient botClassInstance() {
+    public ClassBotClient classBotClient() {
         return ClassBotClient.of()
                 .token(token)
-                .username(USERNAME)
+                .username(username)
                 .create();
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-//        restTemplate.getMessageConverters().add(0 ,mappingJackson2HttpMessageConverter());
-        return restTemplate;
-    }
-
-    @Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        return new MappingJackson2HttpMessageConverter();
-    }
-
-    @Bean
-    public TelegramBotsApi telegramBotsApi() {
-        return new TelegramBotsApi();
-    }
-
 }
+*/

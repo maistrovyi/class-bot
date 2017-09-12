@@ -2,7 +2,6 @@ package com.maystrovyy.rozkladj.api;
 
 import com.maystrovyy.models.Period;
 import com.maystrovyy.models.Schedule;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,8 +13,8 @@ import static java.io.File.separator;
 @Component
 public class ScheduleApiOperations implements BaseApiOperations<Schedule> {
 
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public Schedule parse(String groupName) {

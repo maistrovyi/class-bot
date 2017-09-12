@@ -2,7 +2,6 @@ package com.maystrovyy.rozkladj.api;
 
 import com.maystrovyy.models.Group;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -18,8 +17,7 @@ import static java.io.File.separator;
 @Component
 public class GroupApiOperations implements BaseApiOperations<Group> {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public Group parse(String groupName) {

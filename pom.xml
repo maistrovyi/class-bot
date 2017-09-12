@@ -27,6 +27,7 @@
 		<commons-io.version>2.5</commons-io.version>
 		<commons-lang.version>3.4</commons-lang.version>
 		<HikariCP.version>2.7.1</HikariCP.version>
+		<Telegram.version>3.3</Telegram.version>
 	</properties>
 
 	<dependencies>
@@ -85,6 +86,11 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>io.vavr</groupId>
+			<artifactId>vavr</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
@@ -100,11 +106,16 @@
 			<version>${javax.inject.version}</version>
 		</dependency>
 
-		<!--****************** INTEGRATION *******************-->
+		<!--****************** TELEGRAM *******************-->
 		<dependency>
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
-			<version>3.3</version>
+			<version>${Telegram.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambotsextensions</artifactId>
+			<version>${Telegram.version}</version>
 		</dependency>
 	</dependencies>
 
