@@ -10,6 +10,7 @@ import com.maystrovyy.services.ScheduleService;
 import com.maystrovyy.services.UserService;
 import com.maystrovyy.utils.managers.ScheduleManager;
 import com.maystrovyy.utils.managers.UserDtoManager;
+import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,6 @@ import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboar
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,11 +141,7 @@ public final class ClassBot extends TelegramLongPollingBot {
     }
 
     private void send(SendMessage message) {
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        Try.of(() -> execute(message));
     }
 
     private SendMessage createMessageWithButton(Long chatId, String text) {
