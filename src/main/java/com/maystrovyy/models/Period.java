@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.TIME;
@@ -66,6 +67,12 @@ public class Period implements Serializable, Comparator<Period>, Comparable<Peri
     @JsonProperty(value = "teacher_name")
     @Column(name = "TEACHER_NAME")
     private String teacherName;
+
+    @JsonProperty(value = "teachers")
+    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JoinTable(name = "periods_teachers", joinColumns = @JoinColumn(name = "TEACHER_FK"),
+            inverseJoinColumns = @JoinColumn(name = "PERIOD_FK"))
+    private Set<Teacher> teachers;
 
     @JsonProperty(value = "lesson_week")
     @Column(name = "LESSON_WEEK")

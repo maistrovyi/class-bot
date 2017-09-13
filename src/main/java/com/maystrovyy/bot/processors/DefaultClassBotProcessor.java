@@ -3,11 +3,13 @@ package com.maystrovyy.bot.processors;
 import com.maystrovyy.bot.Messages;
 import com.maystrovyy.bot.core.ClassBot;
 import com.maystrovyy.models.Group;
+import com.maystrovyy.models.Period;
 import com.maystrovyy.models.Schedule;
 import com.maystrovyy.models.User;
 import com.maystrovyy.rozkladj.api.GroupApiOperations;
 import com.maystrovyy.rozkladj.api.ScheduleApiOperations;
 import com.maystrovyy.services.ScheduleService;
+import com.maystrovyy.services.TeacherService;
 import com.maystrovyy.services.UserService;
 import com.maystrovyy.utils.managers.ScheduleManager;
 import com.maystrovyy.utils.managers.UserDtoManager;
@@ -25,6 +27,11 @@ import org.telegram.telegrambots.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.updateshandlers.SentCallback;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+import static com.maystrovyy.models.Role.STUDENT;
+import static com.maystrovyy.models.Role.TEACHER;
 
 @Slf4j
 @Component
@@ -47,6 +54,9 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
 
     @Autowired
     private ScheduleManager scheduleManager;
+
+    @Autowired
+    private TeacherService teacherService;
 
     @Override
     public void processUpdate(Update update) {
@@ -71,6 +81,13 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                     persistedUser.setGroupName(groupName);
                     userService.update(persistedUser);
                     Schedule schedule = scheduleApiOp.parse(groupName);
+//                    TODO implement correct teacher persisting and updating
+                    schedule.getPeriods().stream()
+                            .map(Period::getTeachers)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toSet())
+                            .forEach(teacher -> teacherService.save(teacher));
+
                     scheduleService.save(schedule);
                 } else {
                     send(createMessage(chatId, "На жаль, я не знайшов такої групи..."));
@@ -135,12 +152,12 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                 editAsync(editMessageForSchedule(update.getCallbackQuery()));
                 break;
             case "%iamstudent%":
-                persistedUser.setRole(User.Role.STUDENT);
+                persistedUser.setRole(STUDENT);
                 userService.update(persistedUser);
                 send(createMessage(chatId, "Харош, скажи но свою групу, наприклад  \"ВВ-41\"."));
                 break;
             case "%iamteacher%":
-                persistedUser.setRole(User.Role.TEACHER);
+                persistedUser.setRole(TEACHER);
                 userService.update(persistedUser);
                 send(createMessage(chatId, "Вітаю, Вас, шановний!"));
                 break;

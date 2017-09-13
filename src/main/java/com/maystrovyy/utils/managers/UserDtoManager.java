@@ -9,7 +9,7 @@ public interface UserDtoManager {
                 .firstName(telegramUser.getFirstName())
                 .lastName(telegramUser.getLastName())
                 .userName(telegramUser.getUserName())
-                .create();
+                .build();
 
     }
 
