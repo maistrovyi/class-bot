@@ -1,6 +1,8 @@
 package com.maystrovyy.bot.processors;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.telegram.telegrambots.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.api.objects.CallbackQuery;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -26,6 +28,35 @@ public interface ClassBotProcessor {
     default SendMessage createMessageWithKeyboard(Long chatId, String text, ReplyKeyboardMarkup keyboardMarkup) {
         SendMessage message = createMessage(chatId, text);
         message.setReplyMarkup(keyboardMarkup);
+        return message;
+    }
+
+    default SendMessage createMessageForSchedule(Long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(text);
+
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText("Детальніше");
+        button.setCallbackData("%details%");
+
+        ArrayList<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(button);
+        ArrayList<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        rows.add(row);
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
+        keyboard.setKeyboard(rows);
+
+        message.setReplyMarkup(keyboard);
+        return message;
+    }
+
+    default EditMessageText editMessageForSchedule(CallbackQuery callbackQuery) {
+        EditMessageText message = new EditMessageText();
+        message.setChatId(callbackQuery.getMessage().getChatId());
+        message.setText("Детальніше Тест!");
+        message.setMessageId(callbackQuery.getMessage().getMessageId());
+
         return message;
     }
 

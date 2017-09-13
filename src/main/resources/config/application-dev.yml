@@ -6,18 +6,15 @@
 
 spring:
   profiles: dev
-  devtools:
-    restart:
-      enabled: true
 
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
   datasource:
     hikari:
-      jdbc-url: jdbc:postgresql://localhost:32775/class?autoReconnect=true&useSSL=false
+      jdbc-url: jdbc:postgresql://localhost:32777/class?autoReconnect=true&useSSL=false
       username: docker
       password: docker
 #      data-source-class-name: org.postgresql.ds.PGSimpleDataSource
