@@ -33,6 +33,7 @@ public class ScheduleApiOperations implements BaseApiOperations<Schedule> {
                     .flatMap(Collection::stream)
                     .forEach(teacher -> teacher.setRole(TEACHER));
         }
+//        throw exception if schedule is null
         return schedule;
     }
 

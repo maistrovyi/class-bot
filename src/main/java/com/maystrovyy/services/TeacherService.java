@@ -6,6 +6,7 @@ import com.maystrovyy.repositories.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +23,14 @@ public class TeacherService {
 
     public Optional<Teacher> findById(Long id) {
         return teacherRepository.findById(id);
+    }
+
+    public boolean isExistTeacher(@NotNull Long apiId) {
+        return findByApiId(apiId).isPresent();
+    }
+
+    public Optional<Teacher> findByApiId(Long apiId) {
+        return teacherRepository.findByApiId(apiId);
     }
 
     public Teacher save(Teacher schedule) {

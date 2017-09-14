@@ -2,10 +2,7 @@ package com.maystrovyy.bot.processors;
 
 import com.maystrovyy.bot.Messages;
 import com.maystrovyy.bot.core.ClassBot;
-import com.maystrovyy.models.Group;
-import com.maystrovyy.models.Period;
-import com.maystrovyy.models.Schedule;
-import com.maystrovyy.models.User;
+import com.maystrovyy.models.*;
 import com.maystrovyy.rozkladj.api.GroupApiOperations;
 import com.maystrovyy.rozkladj.api.ScheduleApiOperations;
 import com.maystrovyy.services.ScheduleService;
@@ -28,7 +25,7 @@ import org.telegram.telegrambots.updateshandlers.SentCallback;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static com.maystrovyy.models.Role.STUDENT;
 import static com.maystrovyy.models.Role.TEACHER;
@@ -80,13 +77,21 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
 //                        TODO fix Group mapping
                     persistedUser.setGroupName(groupName);
                     userService.update(persistedUser);
+
+                    //schedule processing, add trying of paring
                     Schedule schedule = scheduleApiOp.parse(groupName);
-//                    TODO implement correct teacher persisting and updating
+
                     schedule.getPeriods().stream()
                             .map(Period::getTeachers)
                             .flatMap(Collection::stream)
-                            .collect(Collectors.toSet())
-                            .forEach(teacher -> teacherService.save(teacher));
+                            .forEach(teacher -> {
+                                Optional<Teacher> persistedTeacher = teacherService.findByApiId(teacher.getApiId());
+                                if (!persistedTeacher.isPresent()) {
+                                    teacherService.save(teacher);
+                                } else {
+                                    teacher.setId(persistedTeacher.get().getId());
+                                }
+                            });
 
                     scheduleService.save(schedule);
                 } else {

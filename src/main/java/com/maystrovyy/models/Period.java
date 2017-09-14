@@ -69,7 +69,7 @@ public class Period implements Serializable, Comparator<Period>, Comparable<Peri
     private String teacherName;
 
     @JsonProperty(value = "teachers")
-    @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "periods_teachers", joinColumns = @JoinColumn(name = "TEACHER_FK"),
             inverseJoinColumns = @JoinColumn(name = "PERIOD_FK"))
     private Set<Teacher> teachers;
