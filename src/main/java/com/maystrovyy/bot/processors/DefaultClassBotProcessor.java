@@ -2,10 +2,14 @@ package com.maystrovyy.bot.processors;
 
 import com.maystrovyy.bot.Messages;
 import com.maystrovyy.bot.core.ClassBot;
-import com.maystrovyy.models.*;
+import com.maystrovyy.models.Group;
+import com.maystrovyy.models.Period;
+import com.maystrovyy.models.Teacher;
+import com.maystrovyy.models.User;
+import com.maystrovyy.models.dto.PeriodDto;
 import com.maystrovyy.rozkladj.api.GroupApiOperations;
-import com.maystrovyy.rozkladj.api.ScheduleApiOperations;
-import com.maystrovyy.services.ScheduleService;
+import com.maystrovyy.rozkladj.api.PeriodApiOperations;
+import com.maystrovyy.services.PeriodService;
 import com.maystrovyy.services.TeacherService;
 import com.maystrovyy.services.UserService;
 import com.maystrovyy.utils.managers.ScheduleManager;
@@ -25,6 +29,7 @@ import org.telegram.telegrambots.updateshandlers.SentCallback;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static com.maystrovyy.models.Role.STUDENT;
@@ -41,10 +46,10 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private UserService userService;
 
     @Autowired
-    private ScheduleApiOperations scheduleApiOp;
+    private PeriodApiOperations periodApiOperations;
 
     @Autowired
-    private ScheduleService scheduleService;
+    private PeriodService periodService;
 
     @Autowired
     private GroupApiOperations groupApiOp;
@@ -79,9 +84,9 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                     userService.update(persistedUser);
 
                     //schedule processing, add trying of paring
-                    Schedule schedule = scheduleApiOp.parse(groupName);
+                    PeriodDto dto = periodApiOperations.parse(groupName);
 
-                    schedule.getPeriods().stream()
+                    dto.periods.stream()
                             .map(Period::getTeachers)
                             .flatMap(Collection::stream)
                             .forEach(teacher -> {
@@ -93,7 +98,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                                 }
                             });
 
-                    scheduleService.save(schedule);
+                    periodService.save(dto.periods);
                 } else {
                     send(createMessage(chatId, "На жаль, я не знайшов такої групи..."));
                 }
@@ -108,28 +113,28 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                     break;
                 case "Сьогодні":
                     String groupName = persistedUser.getGroupName();
-                    Schedule schedule = scheduleService.findByGroupName(groupName);
-                    if (schedule != null) {
+                    List<Period> periods = periodService.findByGroupName(groupName);
+                    if (periods != null) {
 //                        send(createMessage(chatId, scheduleManager.getTodaySchedule(schedule)));
-                        sendAsync(createMessageForSchedule(chatId, scheduleManager.getTodaySchedule(schedule)));
+                        sendAsync(createMessageForSchedule(chatId, scheduleManager.getTodaySchedule(periods)));
                     } else {
                         send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
                     }
                     break;
                 case "Завтра":
                     groupName = persistedUser.getGroupName();
-                    schedule = scheduleService.findByGroupName(groupName);
-                    if (schedule != null) {
-                        send(createMessage(chatId, scheduleManager.getTomorrowSchedule(schedule)));
+                    periods = periodService.findByGroupName(groupName);
+                    if (periods != null) {
+                        send(createMessage(chatId, scheduleManager.getTomorrowSchedule(periods)));
                     } else {
                         send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
                     }
                     break;
                 case "Тиждень":
                     groupName = persistedUser.getGroupName();
-                    schedule = scheduleService.findByGroupName(groupName);
-                    if (schedule != null) {
-                        send(createMessage(chatId, scheduleManager.getWeekSchedule(schedule)));
+                    periods = periodService.findByGroupName(groupName);
+                    if (periods != null) {
+                        send(createMessage(chatId, scheduleManager.getWeekSchedule(periods)));
                     } else {
                         send(createMessageWithKeyboard(chatId, "Бляха, сталась якась помилка...", menuKeyboard()));
                     }

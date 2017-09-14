@@ -1,7 +1,6 @@
 package com.maystrovyy.utils.managers;
 
 import com.maystrovyy.models.Period;
-import com.maystrovyy.models.Schedule;
 import com.maystrovyy.models.Week.WeekNumber;
 import com.maystrovyy.storage.WeekStorage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ public class ScheduleManager {
     @Autowired
     private WeekStorage weekStorage;
 
-    private List<Period> getPeriods(Set<Period> periods, DayOfWeek dayOfWeek, WeekNumber weekNumber) {
+    private List<Period> getPeriods(List<Period> periods, DayOfWeek dayOfWeek, WeekNumber weekNumber) {
         return periods.stream()
                 .filter(period -> period.getDayOfWeek() == dayOfWeek)
                 .filter(Objects::nonNull)
@@ -28,19 +27,19 @@ public class ScheduleManager {
                 .collect(Collectors.toList());
     }
 
-    public String getTodaySchedule(Schedule schedule) {
-        return dailyScheduleToTelegramText(schedule, LocalDate.now().getDayOfWeek());
+    public String getTodaySchedule(List<Period> periods) {
+        return dailyScheduleToTelegramText(periods, LocalDate.now().getDayOfWeek());
     }
 
-    public String getTomorrowSchedule(Schedule schedule) {
-        return dailyScheduleToTelegramText(schedule, LocalDate.now().plusDays(1).getDayOfWeek());
+    public String getTomorrowSchedule(List<Period> periods) {
+        return dailyScheduleToTelegramText(periods, LocalDate.now().plusDays(1).getDayOfWeek());
     }
 
-    public String getWeekSchedule(Schedule schedule) {
+    public String getWeekSchedule(List<Period> periods) {
         StringBuilder builder = new StringBuilder();
         WeekNumber weekNumber = weekStorage.getWeekNumber();
 
-        List<Period> periods = schedule.getPeriods().stream()
+        List<Period> validPeriods = periods.stream()
                 .filter(period -> period.getLessonWeek() == weekNumber.getValue())
                 .sorted()
                 .collect(Collectors.toList());
@@ -48,7 +47,7 @@ public class ScheduleManager {
         List<Period> list = new ArrayList<>();
 
         EnumSet.allOf(DayOfWeek.class).forEach(dayOfWeek -> {
-            List<Period> periodsPerDay = periods.stream().filter(period -> period.getDayOfWeek() == dayOfWeek).collect(Collectors.toList());
+            List<Period> periodsPerDay = validPeriods.stream().filter(period -> period.getDayOfWeek() == dayOfWeek).collect(Collectors.toList());
             if (!periodsPerDay.isEmpty()) {
                 Collections.sort(periodsPerDay);
                 list.addAll(periodsPerDay);
@@ -89,9 +88,8 @@ public class ScheduleManager {
         return builder.toString();
     }
 
-    private String dailyScheduleToTelegramText(Schedule schedule, DayOfWeek dayOfWeek) {
+    private String dailyScheduleToTelegramText(List<Period> periods, DayOfWeek dayOfWeek) {
         StringBuilder builder = new StringBuilder();
-        Set<Period> periods = schedule.getPeriods();
         List<Period> dailyPeriods;
 
         if (dayOfWeek == SATURDAY) {

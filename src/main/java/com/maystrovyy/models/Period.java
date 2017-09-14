@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -35,6 +36,10 @@ public class Period implements Serializable, Comparator<Period>, Comparable<Peri
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PERIOD_ID")
     private Long id;
+
+    @Size(min = 5, max = 5)
+    @Column(name = "GROUP_NAME")
+    private String groupName;
 
     @JsonProperty(value = "day_number")
     @Column(name = "DAY_NUMBER")
