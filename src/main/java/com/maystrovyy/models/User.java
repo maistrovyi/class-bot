@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Builder(builderMethodName = "of", buildMethodName = "create")
+@Builder(builderMethodName = "of")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -42,24 +42,5 @@ public class User implements Serializable {
 
     @Column(name = "GROUP_NAME")
     private String groupName;
-
-    /*@URL
-    @Column(name = "URL")
-    private String url;*/
-
-    /*@Size(min = 10, max = 10)
-    @Pattern(regexp = "(^$|[0-9]{10})")
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;*/
-
-    /*@Email
-    @Column(name = "EMAIL")
-    private String email;*/
-
-    public enum Role {
-
-        STUDENT, TEACHER
-
-    }
 
 }

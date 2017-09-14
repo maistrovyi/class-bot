@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Collection;
 
+import static com.maystrovyy.models.Role.TEACHER;
 import static com.maystrovyy.rozkladj.RozkladJEndpoints.*;
 import static java.io.File.separator;
 
@@ -26,7 +28,12 @@ public class ScheduleApiOperations implements BaseApiOperations<Schedule> {
         if (schedule != null) {
             schedule.setGroupName(groupName);
             schedule.getPeriods().forEach(Period::setDayOfWeekFromDayNumber);
+            schedule.getPeriods().stream()
+                    .map(Period::getTeachers)
+                    .flatMap(Collection::stream)
+                    .forEach(teacher -> teacher.setRole(TEACHER));
         }
+//        throw exception if schedule is null
         return schedule;
     }
 
