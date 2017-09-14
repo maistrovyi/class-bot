@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
 
-
 @Getter
 @Setter
 @Builder(builderMethodName = "of", buildMethodName = "create")
@@ -32,12 +31,8 @@ public class Schedule implements Serializable {
     private Long id;
 
     @Size(min = 5, max = 5)
-//    @Pattern(regexp = ApplicationConstants.LOGIN_REGEXP)
     @Column(name = "GROUP_NAME")
     private String groupName;
-
-//    TODO transliteration support
-//    private String localizedGroupName;
 
     @JsonProperty(value = "data")
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
