@@ -14,4 +14,14 @@ public class ApplicationConfiguration {
         return new RestTemplate();
     }
 
+    /*@Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        return new MappingJackson2HttpMessageConverter(
+                Jackson2ObjectMapperBuilder.json()
+                        .featuresToEnable(SerializationFeature.WRAP_ROOT_VALUE)
+                        .featuresToEnable(DeserializationFeature.UNWRAP_ROOT_VALUE)
+                        .build()
+        );
+    }*/
+
 }
