@@ -31,7 +31,7 @@ public interface ClassBotProcessor {
         return message;
     }
 
-    default SendMessage createMessageForSchedule(Long chatId, String text) {
+    default SendMessage createMessageForDailyPeriods(Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
@@ -51,10 +51,10 @@ public interface ClassBotProcessor {
         return message;
     }
 
-    default EditMessageText editMessageForSchedule(CallbackQuery callbackQuery) {
+    default EditMessageText editMessageForDailyPeriods(CallbackQuery callbackQuery, String text) {
         EditMessageText message = new EditMessageText();
         message.setChatId(callbackQuery.getMessage().getChatId());
-        message.setText("Детальніше Тест!");
+        message.setText(text);
         message.setMessageId(callbackQuery.getMessage().getMessageId());
 
         return message;

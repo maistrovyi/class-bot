@@ -5,7 +5,6 @@ import com.maystrovyy.repositories.PeriodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +22,15 @@ public class PeriodService {
         return periodRepository.findById(id);
     }
 
-    public List<Period> findByGroupName(@NotNull String groupName) {
+    public List<Period> findByGroupNameAndLessonWeek(String groupName, Integer lessonWeek) {
+        return periodRepository.findByGroupNameAndLessonWeek(groupName, lessonWeek);
+    }
+
+    public List<Period> findByGroupNameAndDayNumberAndLessonWeek(String groupName, int dayNumber, Integer lessonWeek) {
+        return periodRepository.findByGroupNameAndDayNumberAndLessonWeek(groupName, dayNumber, lessonWeek);
+    }
+
+    public List<Period> findByGroupName(String groupName) {
         return periodRepository.findByGroupName(groupName);
     }
 

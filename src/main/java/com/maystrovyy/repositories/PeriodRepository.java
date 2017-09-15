@@ -11,4 +11,8 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
 
     List<Period> findByGroupName(String groupName);
 
+    List<Period> findByGroupNameAndLessonWeek(String groupName, Integer lessonWeek);
+
+    List<Period> findByGroupNameAndDayNumberAndLessonWeek(String groupName, int dayNumber, Integer lessonWeek);
+
 }
