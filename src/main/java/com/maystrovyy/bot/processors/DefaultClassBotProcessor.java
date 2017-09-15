@@ -55,9 +55,6 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private GroupService groupService;
 
     @Autowired
-    private PeriodApiOperations periodApiOperations;
-
-    @Autowired
     private PeriodService periodService;
 
     @Autowired
@@ -87,24 +84,22 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         } else if (persistedUser.getGroup() == null) {
             String groupName = message.getText().toLowerCase();
             if (groupApiOp.isValidGroupName(groupName)) {
-                Group persistedGroup = groupService.findByName(groupName);
+                Group group = groupApiOp.parse(groupName).getGroup();
+                Group persistedGroup = groupService.findByName(group.getName());
                 if (persistedGroup != null) {
                     persistedUser.setGroup(persistedGroup);
                     userService.update(persistedUser);
+                    sendAsync(createMessageWithKeyboard(chatId, "Вітаю, @" + persistedUser.getUserName() + ", ти студент групи " + group.getName() + ", ось тобі меню для юзабіліті!", menuKeyboard()));
                 } else {
-                    Group group = groupApiOp.parse(groupName).getGroup();
+                    //TODO wrap to try
                     if (group.getName() != null) {
                         sendAsync(createMessageWithKeyboard(chatId, "Вітаю, @" + persistedUser.getUserName() + ", ти студент групи " + group.getName() + ", ось тобі меню для юзабіліті!", menuKeyboard()));
-                Group group = groupApiOp.parse(groupName).getGroup();
-                if (group != null) {
-                    sendAsync(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
-                    sendAsync(createMessageWithKeyboard(chatId, "Лови за це менюху!", menuKeyboard()));
-//                        TODO fix Group mapping
+                        groupService.save(group);
                         persistedUser.setGroup(group);
                         userService.update(persistedUser);
 
                         //schedule processing, add trying of parsing
-                        PeriodDto dto = periodApiOperations.parse(groupName);
+                        PeriodDto dto = periodApiOperations.parse(persistedUser.getGroup().getName());
 
                         dto.periods.stream()
                                 .map(Period::getTeachers)
@@ -194,7 +189,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     }
 
     private void sendDailyPeriodsDetailed(Update update, User persistedUser, Long chatId) {
-        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroupName(),
+        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroup().getName(),
                 LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
         if (periods.isEmpty()) {
             sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));

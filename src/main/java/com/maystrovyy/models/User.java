@@ -40,7 +40,7 @@ public class User implements Serializable {
     @Column(name = "ROLE")
     private Role role;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "GROUP_FK")
     private Group group;
 
