@@ -1,4 +1,4 @@
-package com.maystrovyy.rozkladj.api;
+package com.maystrovyy.rozklad4j.api;
 
 import com.maystrovyy.models.Group;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.regex.Matcher;
 
-import static com.maystrovyy.rozkladj.RozkladJEndpoints.BASE_PATH;
-import static com.maystrovyy.rozkladj.RozkladJEndpoints.GROUPS;
+import static com.maystrovyy.rozklad4j.Endpoints.BASE_PATH;
+import static com.maystrovyy.rozklad4j.Endpoints.GROUPS;
 import static java.io.File.separator;
 
 @Component

@@ -1,7 +1,7 @@
-package com.maystrovyy.rozkladj.api;
+package com.maystrovyy.rozklad4j.api;
 
 import com.maystrovyy.models.Week;
-import com.maystrovyy.rozkladj.RozkladJEndpoints;
+import com.maystrovyy.rozklad4j.Endpoints;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ public class BaseApiOperationsTest {
 
     @Test
     public void weekTest() {
-        Week week = weekApiOperations.parse(RozkladJEndpoints.EMPTY);
+        Week week = weekApiOperations.parse(Endpoints.EMPTY);
         assertEquals(week.getNumber(), Integer.valueOf(1));
     }
 
