@@ -80,7 +80,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         } else if (persistedUser.getGroupName() == null) {
             String groupName = message.getText().toLowerCase();
             if (groupApiOp.isValidGroupName(groupName)) {
-                Group group = groupApiOp.parse(groupName);
+                Group group = groupApiOp.parse(groupName).getGroup();
                 if (group != null) {
                     sendAsync(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
                     sendAsync(createMessageWithKeyboard(chatId, "Лови за це менюху!", menuKeyboard()));

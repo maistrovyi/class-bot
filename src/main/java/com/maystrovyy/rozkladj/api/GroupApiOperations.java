@@ -1,10 +1,8 @@
 package com.maystrovyy.rozkladj.api;
 
-import com.maystrovyy.models.Group;
-import lombok.extern.slf4j.Slf4j;
+import com.maystrovyy.models.dto.GroupDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -14,24 +12,17 @@ import static com.maystrovyy.rozkladj.RozkladJEndpoints.BASE_PATH;
 import static com.maystrovyy.rozkladj.RozkladJEndpoints.GROUPS;
 import static java.io.File.separator;
 
-@Slf4j
 @Component
-public class GroupApiOperations implements BaseApiOperations<Group> {
+public class GroupApiOperations implements BaseApiOperations<GroupDto> {
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
-    public Group parse(String groupName) {
-        Group group = null;
+    public GroupDto parse(String groupName) {
         String url = BASE_PATH + GROUPS + separator + groupName;
         URI uri = getURI(url);
-        try {
-            group = restTemplate.getForObject(uri, Group.class);
-        } catch (RestClientException e) {
-            log.warn(e.getMessage());
-        }
-        return group;
+        return restTemplate.getForObject(uri, GroupDto.class);
     }
 
     private boolean matchGroupNameToRegex(String s) {
