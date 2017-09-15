@@ -22,8 +22,24 @@ public class PeriodService {
         return periodRepository.findById(id);
     }
 
+    public List<Period> findByGroupNameAndLessonWeek(String groupName, Integer lessonWeek) {
+        return periodRepository.findByGroupNameAndLessonWeek(groupName, lessonWeek);
+    }
+
+    public List<Period> findByGroupNameAndDayNumberAndLessonWeek(String groupName, int dayNumber, Integer lessonWeek) {
+        return periodRepository.findByGroupNameAndDayNumberAndLessonWeek(groupName, dayNumber, lessonWeek);
+    }
+
+    public List<Period> findByGroupName(String groupName) {
+        return periodRepository.findByGroupName(groupName);
+    }
+
     public Period save(Period period) {
         return periodRepository.save(period);
+    }
+
+    public List<Period> save(List<Period> periods) {
+        return periodRepository.saveAll(periods);
     }
 
     public void update(Period period) {

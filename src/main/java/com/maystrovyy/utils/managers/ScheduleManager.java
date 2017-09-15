@@ -1,10 +1,6 @@
 package com.maystrovyy.utils.managers;
 
 import com.maystrovyy.models.Period;
-import com.maystrovyy.models.Schedule;
-import com.maystrovyy.models.Week.WeekNumber;
-import com.maystrovyy.storage.WeekStorage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -12,38 +8,22 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.time.DayOfWeek.*;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SUNDAY;
 
 @Component
 public class ScheduleManager {
 
-    @Autowired
-    private WeekStorage weekStorage;
-
-    private List<Period> getPeriods(Set<Period> periods, DayOfWeek dayOfWeek, WeekNumber weekNumber) {
-        return periods.stream()
-                .filter(period -> period.getDayOfWeek() == dayOfWeek)
-                .filter(Objects::nonNull)
-                .filter(period -> period.getLessonWeek() == weekNumber.getValue())
-                .collect(Collectors.toList());
+    public String mapPeriodsDetailed(List<Period> periods, DayOfWeek dayOfWeek) {
+        return formatDetailedPeriodsToTelegramText(periods, dayOfWeek);
     }
 
-    public String getTodaySchedule(Schedule schedule) {
-        return dailyScheduleToTelegramText(schedule, LocalDate.now().getDayOfWeek());
+    public String mapPeriods(List<Period> periods, DayOfWeek dayOfWeek) {
+        return formatPeriodsToTelegramText(periods, dayOfWeek);
     }
 
-    public String getTomorrowSchedule(Schedule schedule) {
-        return dailyScheduleToTelegramText(schedule, LocalDate.now().plusDays(1).getDayOfWeek());
-    }
-
-    public String getWeekSchedule(Schedule schedule) {
+    public String mapPeriods(List<Period> periods) {
         StringBuilder builder = new StringBuilder();
-        WeekNumber weekNumber = weekStorage.getWeekNumber();
-
-        List<Period> periods = schedule.getPeriods().stream()
-                .filter(period -> period.getLessonWeek() == weekNumber.getValue())
-                .sorted()
-                .collect(Collectors.toList());
 
         List<Period> list = new ArrayList<>();
 
@@ -89,22 +69,41 @@ public class ScheduleManager {
         return builder.toString();
     }
 
-    private String dailyScheduleToTelegramText(Schedule schedule, DayOfWeek dayOfWeek) {
+    private String formatDetailedPeriodsToTelegramText(List<Period> periods, DayOfWeek dayOfWeek) {
         StringBuilder builder = new StringBuilder();
-        Set<Period> periods = schedule.getPeriods();
-        List<Period> dailyPeriods;
 
-        if (dayOfWeek == SATURDAY) {
-            if (periods.stream().noneMatch(period -> period.getDayOfWeek() == SATURDAY)) {
-                dayOfWeek = MONDAY;
-            }
-        }
-
-        dailyPeriods = getPeriods(periods, dayOfWeek, weekStorage.getWeekNumber());
-        Collections.sort(dailyPeriods);
+        Collections.sort(periods);
 
         builder.append(getUkrainianDayOfWeek(dayOfWeek));
-        dailyPeriods.forEach(period -> builder.append("\n \t")
+        periods.forEach(period -> {
+            builder.append("\n \t")
+                    .append(period.getLessonNumber())
+                    .append(". ")
+                    .append(period.getLessonName())
+                    .append("\n")
+                    .append("\t \t \t ")
+                    .append(period.getLessonRoom())
+                    .append(", ")
+                    .append(period.getLessonType())
+                    .append(", (")
+                    .append(period.getFromTime())
+                    .append(" - ")
+                    .append(period.getToTime())
+                    .append(")")
+                    .append("\n")
+                    .append("\t \t \t ");
+            period.getTeachers().forEach(teacher -> builder.append(teacher.getTeacherFullName()).append("\n"));
+        });
+        return builder.toString();
+    }
+
+    private String formatPeriodsToTelegramText(List<Period> periods, DayOfWeek dayOfWeek) {
+        StringBuilder builder = new StringBuilder();
+
+        Collections.sort(periods);
+
+        builder.append(getUkrainianDayOfWeek(dayOfWeek));
+        periods.forEach(period -> builder.append("\n \t")
                 .append(period.getLessonNumber())
                 .append(". ")
                 .append(period.getLessonName())
@@ -145,5 +144,4 @@ public class ScheduleManager {
                 return "Понеділок:";
         }
     }
-
 }
