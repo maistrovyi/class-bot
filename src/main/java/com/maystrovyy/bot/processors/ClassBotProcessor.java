@@ -97,22 +97,46 @@ public interface ClassBotProcessor {
         keyboardFirstRow.add(button2);
 
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        KeyboardButton button3 = new KeyboardButton("Нагадування");
-        KeyboardButton button4 = new KeyboardButton("Екзамени");
+        KeyboardButton button3 = new KeyboardButton("Екстра");
+        KeyboardButton button4 = new KeyboardButton("Допомога");
         keyboardSecondRow.add(button3);
         keyboardSecondRow.add(button4);
 
-        KeyboardRow keyboardFourthRow = new KeyboardRow();
-        KeyboardButton button6 = new KeyboardButton("Допомога");
-        keyboardFourthRow.add(button6);
-
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
-        keyboard.add(keyboardFourthRow);
         replyKeyboardMarkup.setKeyboard(keyboard);
 
         return replyKeyboardMarkup;
     }
+
+    default ReplyKeyboardMarkup extraMenuKeyboard() {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        List<KeyboardRow> keyboard = new ArrayList<>();
+
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardButton button1 = new KeyboardButton("Змінити групу");
+        keyboardFirstRow.add(button1);
+
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
+        KeyboardButton button2 = new KeyboardButton("Нагадування");
+        KeyboardButton button3 = new KeyboardButton("Екзамени");
+        keyboardSecondRow.add(button2);
+        keyboardSecondRow.add(button3);
+
+        KeyboardRow keyboardThirdRow = new KeyboardRow();
+        KeyboardButton button4 = new KeyboardButton("Назад");
+        keyboardThirdRow.add(button4);
+
+        keyboard.add(keyboardFirstRow);
+        keyboard.add(keyboardSecondRow);
+        keyboard.add(keyboardThirdRow);
+        replyKeyboardMarkup.setKeyboard(keyboard);
+
+        return replyKeyboardMarkup;
+    }
+
 
     default ReplyKeyboardMarkup scheduleMenuKeyboard() {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();

@@ -1,4 +1,4 @@
-package com.maystrovyy.rozkladj.api;
+package com.maystrovyy.rozklad4j.api;
 
 import com.maystrovyy.models.dto.PeriodDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 import static com.maystrovyy.models.Role.TEACHER;
-import static com.maystrovyy.rozkladj.RozkladJEndpoints.*;
+import static com.maystrovyy.rozklad4j.Endpoints.*;
 import static java.io.File.separator;
 
 @Component

@@ -40,7 +40,8 @@ public class User implements Serializable {
     @Column(name = "ROLE")
     private Role role;
 
-    @Column(name = "GROUP_NAME")
-    private String groupName;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "GROUP_FK")
+    private Group group;
 
 }

@@ -7,8 +7,9 @@ import com.maystrovyy.models.Period;
 import com.maystrovyy.models.Teacher;
 import com.maystrovyy.models.User;
 import com.maystrovyy.models.dto.PeriodDto;
-import com.maystrovyy.rozkladj.api.GroupApiOperations;
-import com.maystrovyy.rozkladj.api.PeriodApiOperations;
+import com.maystrovyy.rozklad4j.api.GroupApiOperations;
+import com.maystrovyy.rozklad4j.api.PeriodApiOperations;
+import com.maystrovyy.services.GroupService;
 import com.maystrovyy.services.PeriodService;
 import com.maystrovyy.services.TeacherService;
 import com.maystrovyy.services.UserService;
@@ -51,6 +52,9 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private UserService userService;
 
     @Autowired
+    private GroupService groupService;
+
+    @Autowired
     private PeriodService periodService;
 
     @Autowired
@@ -68,44 +72,51 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     @Override
     public void processUpdate(Update update) {
         Message message = update.getMessage();
+        Long chatId = message.getChatId();
         String telegramUserName = message.getFrom().getUserName();
         User persistedUser = userService.findByUserName(telegramUserName);
-        Long chatId = message.getChatId();
         if (persistedUser == null) {
             sendAsync(createMessageWithButton(chatId, Messages.GREETING));
             User user = UserDtoManager.toUser(update.getMessage().getFrom());
             userService.save(user);
         } else if (persistedUser.getRole() == null) {
             sendAsync(createMessageWithButton(chatId, "Будь ласка, вибери свою роль!"));
-        } else if (persistedUser.getGroupName() == null) {
+        } else if (persistedUser.getGroup() == null) {
             String groupName = message.getText().toLowerCase();
             if (groupApiOp.isValidGroupName(groupName)) {
                 Group group = groupApiOp.parse(groupName).getGroup();
-                if (group != null) {
-                    sendAsync(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
-                    sendAsync(createMessageWithKeyboard(chatId, "Лови за це менюху!", menuKeyboard()));
-//                        TODO fix Group mapping
-                    persistedUser.setGroupName(groupName);
+                Group persistedGroup = groupService.findByName(group.getName());
+                if (persistedGroup != null) {
+                    persistedUser.setGroup(persistedGroup);
                     userService.update(persistedUser);
-
-                    //schedule processing, add trying of parsing
-                    PeriodDto dto = periodApiOperations.parse(groupName);
-
-                    dto.periods.stream()
-                            .map(Period::getTeachers)
-                            .flatMap(Collection::stream)
-                            .forEach(teacher -> {
-                                Optional<Teacher> persistedTeacher = teacherService.findByApiId(teacher.getApiId());
-                                if (!persistedTeacher.isPresent()) {
-                                    teacherService.save(teacher);
-                                } else {
-                                    teacher.setId(persistedTeacher.get().getId());
-                                }
-                            });
-
-                    periodService.save(dto.periods);
+                    sendAsync(createMessageWithKeyboard(chatId, "Вітаю, @" + persistedUser.getUserName() + ", ти студент групи " + group.getName() + ", ось тобі меню для юзабіліті!", menuKeyboard()));
                 } else {
-                    sendAsync(createMessage(chatId, "На жаль, я не знайшов такої групи..."));
+                    //TODO wrap to try
+                    if (group.getName() != null) {
+                        sendAsync(createMessageWithKeyboard(chatId, "Вітаю, @" + persistedUser.getUserName() + ", ти студент групи " + group.getName() + ", ось тобі меню для юзабіліті!", menuKeyboard()));
+                        groupService.save(group);
+                        persistedUser.setGroup(group);
+                        userService.update(persistedUser);
+
+                        //schedule processing, add trying of parsing
+                        PeriodDto dto = periodApiOperations.parse(persistedUser.getGroup().getName());
+
+                        dto.periods.stream()
+                                .map(Period::getTeachers)
+                                .flatMap(Collection::stream)
+                                .forEach(teacher -> {
+                                    Optional<Teacher> persistedTeacher = teacherService.findByApiId(teacher.getApiId());
+                                    if (!persistedTeacher.isPresent()) {
+                                        teacherService.save(teacher);
+                                    } else {
+                                        teacher.setId(persistedTeacher.get().getId());
+                                    }
+                                });
+
+                        periodService.save(dto.periods);
+                    } else {
+                        sendAsync(createMessage(chatId, "На жаль, я не знайшов такої групи..."));
+                    }
                 }
             } else {
                 sendAsync(createMessage(chatId, "Будь ласка, вкажи свою групу!"));
@@ -124,6 +135,15 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                     break;
                 case "Тиждень":
                     sendWeeklyPeriods(persistedUser, chatId);
+                    break;
+                case "Екстра":
+                    sendAsync(createMessageWithKeyboard(chatId, "Викладачі (в розробці) Плани: змінити групу, нагадування, екзамени ...", extraMenuKeyboard()));
+                    break;
+                case "Змінити групу":
+                    String oldGroup = persistedUser.getGroup().getName();
+                    persistedUser.setGroup(null);
+                    userService.update(persistedUser);
+                    sendAsync(createMessageWithKeyboard(chatId, "Ооокей, забули про " + oldGroup + ", тепер тобі потрібно обрати собі нову групу, інакше я тобі нічим не зможу допомогти.", menuKeyboard()));
                     break;
                 case "Викладачі":
                     sendAsync(createMessageWithKeyboard(chatId, "Викладачі (в розробці) ...", menuKeyboard()));
@@ -148,7 +168,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     }
 
     private void sendWeeklyPeriods(User persistedUser, Long chatId) {
-        String groupName = persistedUser.getGroupName();
+        String groupName = persistedUser.getGroup().getName();
         List<Period> periods = periodService.findByGroupNameAndLessonWeek(groupName, weekStorage.getWeekNumber().getValue());
         if (periods.isEmpty()) {
             sendAsync(createMessage(chatId, "Бляха, сталась якась помилка..."));
@@ -158,7 +178,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     }
 
     private void sendDailyPeriods(User persistedUser, Long chatId, LocalDate date) {
-        String groupName = persistedUser.getGroupName();
+        String groupName = persistedUser.getGroup().getName();
         List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(groupName,
                 date.getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
         if (periods.isEmpty()) {
@@ -169,7 +189,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     }
 
     private void sendDailyPeriodsDetailed(Update update, User persistedUser, Long chatId) {
-        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroupName(),
+        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroup().getName(),
                 LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
         if (periods.isEmpty()) {
             sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));

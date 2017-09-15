@@ -1,4 +1,4 @@
-package com.maystrovyy.rozkladj.api;
+package com.maystrovyy.rozklad4j.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -1,8 +1,8 @@
-package com.maystrovyy.rozkladj;
+package com.maystrovyy.rozklad4j;
 
 import static java.io.File.separator;
 
-public interface RozkladJEndpoints {
+public interface Endpoints {
 
     String API_DOMAIN = "https://api.rozklad.org.ua/";
     String API_VER = "v2";

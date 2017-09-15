@@ -19,7 +19,7 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.TIME;
 
 @Getter
 @Setter
-@Builder(builderMethodName = "of", buildMethodName = "create")
+@Builder(builderMethodName = "of")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode

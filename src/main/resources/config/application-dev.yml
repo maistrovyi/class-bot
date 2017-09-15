@@ -17,4 +17,3 @@ spring:
       jdbc-url: jdbc:postgresql://localhost:32777/class?autoReconnect=true&useSSL=false
       username: docker
       password: docker
-#      data-source-class-name: org.postgresql.ds.PGSimpleDataSource
