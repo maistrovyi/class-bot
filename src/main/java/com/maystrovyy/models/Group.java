@@ -1,7 +1,6 @@
 package com.maystrovyy.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,7 +18,6 @@ import java.io.Serializable;
 @Data
 //@JsonInclude(value = NON_NULL)
 //@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName(value = "data")
 public class Group implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +30,6 @@ public class Group implements Serializable {
 //    @JsonProperty(value = "group_id")
 //    @Column(name = "GROUP_API_ID")
 //    private Long apiId;
-
     @JsonProperty(value = "group_full_name")
 //    @Column(name = "GROUP_NAME")
     private String name;

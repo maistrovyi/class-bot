@@ -43,10 +43,10 @@ import static com.maystrovyy.models.Role.TEACHER;
 public final class DefaultClassBotProcessor implements ClassBotProcessor {
 
     @Autowired
-    private WeekStorage weekStorage;
+    private ClassBot classBot;
 
     @Autowired
-    private ClassBot classBot;
+    private WeekStorage weekStorage;
 
     @Autowired
     private UserService userService;
@@ -64,10 +64,13 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private GroupApiOperations groupApiOp;
 
     @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
     private ScheduleManager scheduleManager;
 
     @Autowired
-    private TeacherService teacherService;
+    private PeriodApiOperations periodApiOperations;
 
     @Override
     public void processUpdate(Update update) {
@@ -89,9 +92,13 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
                     persistedUser.setGroup(persistedGroup);
                     userService.update(persistedUser);
                 } else {
-                    Group group = groupApiOp.parse(groupName);
+                    Group group = groupApiOp.parse(groupName).getGroup();
                     if (group.getName() != null) {
                         sendAsync(createMessageWithKeyboard(chatId, "Вітаю, @" + persistedUser.getUserName() + ", ти студент групи " + group.getName() + ", ось тобі меню для юзабіліті!", menuKeyboard()));
+                Group group = groupApiOp.parse(groupName).getGroup();
+                if (group != null) {
+                    sendAsync(createMessage(chatId, "Крутяк, я запам\'ятав, що ти з " + groupName + "!"));
+                    sendAsync(createMessageWithKeyboard(chatId, "Лови за це менюху!", menuKeyboard()));
 //                        TODO fix Group mapping
                         persistedUser.setGroup(group);
                         userService.update(persistedUser);
@@ -186,6 +193,16 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         }
     }
 
+    private void sendDailyPeriodsDetailed(Update update, User persistedUser, Long chatId) {
+        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroupName(),
+                LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
+        if (periods.isEmpty()) {
+            sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));
+        } else {
+            editAsync(editMessageForDailyPeriods(update.getCallbackQuery(), scheduleManager.mapPeriodsDetailed(periods, LocalDate.now().getDayOfWeek())));
+        }
+    }
+
     @Override
     public void processCallback(Update update) {
         String data = update.getCallbackQuery().getData();
@@ -193,13 +210,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         switch (data) {
             case "%details%":
-                List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroup().getName(),
-                        LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
-                if (periods.isEmpty()) {
-                    sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));
-                } else {
-                    editAsync(editMessageForDailyPeriods(update.getCallbackQuery(), scheduleManager.mapPeriodsDetailed(periods, LocalDate.now().getDayOfWeek())));
-                }
+                sendDailyPeriodsDetailed(update, persistedUser, chatId);
                 break;
             case "%iamstudent%":
                 persistedUser.setRole(STUDENT);
@@ -217,8 +228,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private void sendAsync(SendMessage message) {
         Try.run(() -> classBot.executeAsync(message, new SentCallback<Message>() {
             @Override
-            public void onResult(BotApiMethod<Message> botApiMethod, Message message) {
-            }
+            public void onResult(BotApiMethod<Message> botApiMethod, Message message) {  }
 
             @Override
             public void onError(BotApiMethod<Message> botApiMethod, TelegramApiRequestException e) {
@@ -236,8 +246,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private void editAsync(EditMessageText message) {
         Try.run(() -> classBot.executeAsync(message, new SentCallback<Serializable>() {
             @Override
-            public void onResult(BotApiMethod<Serializable> botApiMethod, Serializable serializable) {
-            }
+            public void onResult(BotApiMethod<Serializable> botApiMethod, Serializable serializable) {  }
 
             @Override
             public void onError(BotApiMethod<Serializable> botApiMethod, TelegramApiRequestException e) {

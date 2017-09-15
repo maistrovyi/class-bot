@@ -1,6 +1,6 @@
 package com.maystrovyy.rozklad4j.api;
 
-import com.maystrovyy.models.Group;
+import com.maystrovyy.models.dto.GroupDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -13,16 +13,16 @@ import static com.maystrovyy.rozklad4j.Endpoints.GROUPS;
 import static java.io.File.separator;
 
 @Component
-public class GroupApiOperations implements BaseApiOperations<Group> {
+public class GroupApiOperations implements BaseApiOperations<GroupDto> {
 
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
-    public Group parse(String groupName) {
+    public GroupDto parse(String groupName) {
         String url = BASE_PATH + GROUPS + separator + groupName;
         URI uri = getURI(url);
-        return restTemplate.getForObject(uri, Group.class);
+        return restTemplate.getForObject(uri, GroupDto.class);
     }
 
     private boolean matchGroupNameToRegex(String s) {
