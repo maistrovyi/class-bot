@@ -42,16 +42,13 @@ import static com.maystrovyy.models.Role.TEACHER;
 public final class DefaultClassBotProcessor implements ClassBotProcessor {
 
     @Autowired
-    private WeekStorage weekStorage;
-
-    @Autowired
     private ClassBot classBot;
 
     @Autowired
-    private UserService userService;
+    private WeekStorage weekStorage;
 
     @Autowired
-    private PeriodApiOperations periodApiOperations;
+    private UserService userService;
 
     @Autowired
     private PeriodService periodService;
@@ -60,10 +57,13 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
     private GroupApiOperations groupApiOp;
 
     @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
     private ScheduleManager scheduleManager;
 
     @Autowired
-    private TeacherService teacherService;
+    private PeriodApiOperations periodApiOperations;
 
     @Override
     public void processUpdate(Update update) {
@@ -168,6 +168,16 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         }
     }
 
+    private void sendDailyPeriodsDetailed(Update update, User persistedUser, Long chatId) {
+        List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroupName(),
+                LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
+        if (periods.isEmpty()) {
+            sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));
+        } else {
+            editAsync(editMessageForDailyPeriods(update.getCallbackQuery(), scheduleManager.mapPeriodsDetailed(periods, LocalDate.now().getDayOfWeek())));
+        }
+    }
+
     @Override
     public void processCallback(Update update) {
         String data = update.getCallbackQuery().getData();
@@ -175,13 +185,7 @@ public final class DefaultClassBotProcessor implements ClassBotProcessor {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         switch (data) {
             case "%details%":
-                List<Period> periods = periodService.findByGroupNameAndDayNumberAndLessonWeek(persistedUser.getGroupName(),
-                        LocalDate.now().getDayOfWeek().getValue(), weekStorage.getWeekNumber().getValue());
-                if (periods.isEmpty()) {
-                    sendAsync(createMessage(chatId, "У тебе немає сьогодні пар - йди гуляй."));
-                } else {
-                    editAsync(editMessageForDailyPeriods(update.getCallbackQuery(), scheduleManager.mapPeriodsDetailed(periods, LocalDate.now().getDayOfWeek())));
-                }
+                sendDailyPeriodsDetailed(update, persistedUser, chatId);
                 break;
             case "%iamstudent%":
                 persistedUser.setRole(STUDENT);
