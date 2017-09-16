@@ -117,17 +117,20 @@ public interface ClassBotProcessor {
 
         KeyboardRow keyboardFirstRow = new KeyboardRow();
         KeyboardButton button1 = new KeyboardButton("Змінити групу");
+        KeyboardButton button2 = new KeyboardButton("Редагувати розклад");
+
         keyboardFirstRow.add(button1);
+        keyboardFirstRow.add(button2);
 
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        KeyboardButton button2 = new KeyboardButton("Нагадування");
-        KeyboardButton button3 = new KeyboardButton("Екзамени");
-        keyboardSecondRow.add(button2);
+        KeyboardButton button3 = new KeyboardButton("Нагадування");
+        KeyboardButton button4 = new KeyboardButton("Контакти");
         keyboardSecondRow.add(button3);
+        keyboardSecondRow.add(button4);
 
         KeyboardRow keyboardThirdRow = new KeyboardRow();
-        KeyboardButton button4 = new KeyboardButton("Назад");
-        keyboardThirdRow.add(button4);
+        KeyboardButton button5 = new KeyboardButton("Назад");
+        keyboardThirdRow.add(button5);
 
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);

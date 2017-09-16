@@ -12,7 +12,10 @@ import static java.time.DayOfWeek.MONDAY;
 import static java.time.DayOfWeek.SUNDAY;
 
 @Component
-public class ScheduleManager {
+public class PeriodManager {
+
+    private static final String NULL_LESSON_ROOM = "Хз де...";
+    private static final String NULL_TEACHER = "Хз хто...";
 
     public String mapPeriodsDetailed(List<Period> periods, DayOfWeek dayOfWeek) {
         return formatDetailedPeriodsToTelegramText(periods, dayOfWeek);
@@ -44,6 +47,12 @@ public class ScheduleManager {
             }
         });
 
+        if (linkedMap.size() > 1) {
+            builder.append(list.stream().mapToInt(Period::getLessonWeek).findFirst().orElse(1))
+                    .append(" тиждень")
+                    .append("\n \n");
+        }
+
         linkedMap.forEach((dayOfWeek, periodList) -> {
             builder.append(getUkrainianDayOfWeek(dayOfWeek));
             periodList.forEach(period -> builder.append("\n \t")
@@ -52,7 +61,7 @@ public class ScheduleManager {
                     .append(period.getLessonName())
                     .append("\n")
                     .append("\t \t \t ")
-                    .append(period.getLessonRoom())
+                    .append(nullableOf(period.getLessonRoom(), PotentialNullableLessonParam.LESSON_ROOM))
                     .append(", ")
                     .append(period.getLessonType())
                     .append(", (")
@@ -62,7 +71,7 @@ public class ScheduleManager {
                     .append(")")
                     .append("\n")
                     .append("\t \t \t ")
-                    .append(period.getTeacherName()));
+                    .append(nullableOf(period.getTeacherName(), PotentialNullableLessonParam.TEACHER)));
             builder.append("\n \n");
         });
 
@@ -82,7 +91,7 @@ public class ScheduleManager {
                     .append(period.getLessonName())
                     .append("\n")
                     .append("\t \t \t ")
-                    .append(period.getLessonRoom())
+                    .append(nullableOf(period.getLessonRoom(), PotentialNullableLessonParam.LESSON_ROOM))
                     .append(", ")
                     .append(period.getLessonType())
                     .append(", (")
@@ -92,7 +101,11 @@ public class ScheduleManager {
                     .append(")")
                     .append("\n")
                     .append("\t \t \t ");
-            period.getTeachers().forEach(teacher -> builder.append(teacher.getTeacherFullName()).append("\n"));
+            if (period.getTeachers().isEmpty()) {
+                builder.append(NULL_TEACHER).append("\n");
+            } else {
+                period.getTeachers().forEach(teacher -> builder.append(teacher.getTeacherFullName()).append("\n"));
+            }
         });
         return builder.toString();
     }
@@ -109,7 +122,7 @@ public class ScheduleManager {
                 .append(period.getLessonName())
                 .append("\n")
                 .append("\t \t \t ")
-                .append(period.getLessonRoom())
+                .append(nullableOf(period.getLessonRoom(), PotentialNullableLessonParam.LESSON_ROOM))
                 .append(", ")
                 .append(period.getLessonType())
                 .append(", (")
@@ -119,8 +132,26 @@ public class ScheduleManager {
                 .append(")")
                 .append("\n")
                 .append("\t \t \t ")
-                .append(period.getTeacherName()));
+                .append(nullableOf(period.getTeacherName(), PotentialNullableLessonParam.TEACHER)));
         return builder.toString();
+    }
+
+    private String nullableOf(String value, PotentialNullableLessonParam param) {
+        if (value == null || value.isEmpty()) {
+            switch (param) {
+                case TEACHER:
+                    return NULL_TEACHER;
+                case LESSON_ROOM:
+                    return NULL_LESSON_ROOM;
+            }
+        }
+        return value;
+    }
+
+    private enum PotentialNullableLessonParam {
+
+        TEACHER, LESSON_ROOM
+
     }
 
     private DayOfWeek getCorrectDay() {
