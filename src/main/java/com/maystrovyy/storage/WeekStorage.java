@@ -20,8 +20,13 @@ public class WeekStorage {
      @Getter
      private WeekNumber weekNumber;
 
+     public WeekNumber reversed() {
+          return weekNumber == WeekNumber.FIRST ? WeekNumber.SECOND : WeekNumber.FIRST;
+     }
+
+//     TODO add exceptions handling and task restarting
      @PostConstruct
-     @Scheduled(cron = "0 0 12 ? * SUN")
+     @Scheduled(cron = "0 59 23 ? * SUN")
      private void init() {
           this.weekNumber = WeekNumber.integerOf(weekApiOperations.parse(EMPTY).getNumber());
      }
