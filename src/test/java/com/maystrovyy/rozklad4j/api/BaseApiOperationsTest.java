@@ -3,6 +3,7 @@ package com.maystrovyy.rozklad4j.api;
 import com.maystrovyy.models.Week;
 import com.maystrovyy.rozklad4j.Endpoints;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,7 @@ public class BaseApiOperationsTest {
     @Resource
     WeekApiOperations weekApiOperations;
 
+    @Ignore
     @Test
     public void isValidGroupName_Success() {
         Assert.assertTrue(groupApiOperations.isValidGroupName("vv-41"));
